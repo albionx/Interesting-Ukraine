@@ -1,5 +1,4 @@
 # Do not upload key files and cache
 /__pycache__
 credentials.py
-*.db
 api-documentation.txt

@@ -24,10 +24,12 @@ import credentials
 from systemlog import logger
 
 # constants
+projectName = 'Interesting Ukraine'
 SQLDB = 'facts.db'
 factsTable = 'facts'
 twitterCharacterLimit = 280
 tweetSeparator = '...'
+emailAlert = True
 
 
 def getRandomMessage():
@@ -44,7 +46,7 @@ def getRandomMessage():
 
 def connnectToTwitter():
 	""" Connects to Twitter. Uses the Credentials file to isolate credentials from the main running script. """
-	
+
 	if 'badcredentials' in sys.argv:
 		logger.info('2/4 - Using intentionally bad credentials.')
 		credentials.consumer_key = 'fake'
