@@ -2,6 +2,8 @@ import credentials
 import logging
 from logging.handlers import SMTPHandler
 
+emailAlert = True
+
 # Logs host-specific configuration
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -18,7 +20,7 @@ if emailAlert:
         mailhost=(credentials.gmail['hostname'], credentials.gmail['port']),
         fromaddr=credentials.gmail['username'],
         toaddrs=[credentials.gmail['username']],
-        subject='Critical failure in ' + projectName,
+        subject='Update about Interesting Ukraine',
         credentials=(credentials.gmail['username'], credentials.gmail['password']),  # app specific password
         secure=()
         )

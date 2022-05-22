@@ -8,7 +8,7 @@ This python script powers the 'Ukraine is interesting' bot, which publishes an i
 Many people have come to learn about Ukraine due to the Russian invasion. Unfortunately, much of what makes Ukraine such a rich country and nation is not being publicized. This bot aims to provide interesting facts that help raise people's awareness of Ukraine's rich history, geography, and culture.
 
 #### 🔎 How?
-1. Uses the [twitter library](https://pypi.python.org/pypi/python-twitter) to connect to Twitter's API with the credentials of the 'Ukraine is Interesting' user.
+1. Uses the [python-twitter library](https://pypi.python.org/pypi/python-twitter) to connect to Twitter's API with the credentials of the 'Ukraine is Interesting' user.
 2. Retrieves a random message from the facts.db SQLite3 database, amongst those messages that have been posted the least.
 3. Posts the message (optionally, with media) on Twitter. If the message is above the character limit, it breaks it into multiple posts.
 4. Marks the message as used in the local database.

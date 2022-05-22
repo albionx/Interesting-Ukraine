@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Requires: twitter, requests, requests-oauthlib, sqlite3
+# Requires: python-twitter, requests, requests-oauthlib, sqlite3
 
 # main dependencies
 import twitter
@@ -7,17 +7,15 @@ import sqlite3
 import sys
 import textwrap
 
-# internal dependencies
-import credentials
-from systemlog import logger
-
 # constants
-projectName = 'Interesting Ukraine'
 SQLDB = 'facts.db'
 factsTable = 'facts'
 twitterCharacterLimit = 280
 tweetSeparator = '...'
-emailAlert = True
+
+# internal dependencies
+import credentials
+from systemlog import logger
 
 
 def getRandomMessage():
@@ -25,7 +23,11 @@ def getRandomMessage():
 	try:
 		with sqlite3.connect(SQLDB) as database:
 			(rowID, addedDate, category, message, source, media, usedCount) = database.cursor().execute('SELECT * FROM {} ORDER BY usedCount, RANDOM() DESC limit 1'.format(factsTable)).fetchone()
-			logger.info('===============\n1/4 - Retrieval successful: {} {}\n==============='.format(message, media))
+			logger.info('===============')
+			logger.info('1/4 - Retrieval successful')
+			logger.info('1/4 - Message: {}'.format(message))
+			logger.info('1/4 - Media: {}'.format(media))
+			logger.info('===============')
 	except:
 		logger.critical('===============\n1/4 - Retrieval failed. Unable to retrieve a message from the DB. Notifying over email.\n===============')
 		return None
@@ -38,7 +40,6 @@ def connnectToTwitter():
 	if 'badcredentials' in sys.argv:
 		logger.info('2/4 - Using intentionally bad credentials.')
 		credentials.consumer_key = 'fake'
-
 	try:
 		api = twitter.Api(
 			consumer_key=credentials.consumer_key,
@@ -101,7 +102,7 @@ def markUsed(rowID, usedCount):
 	except Exception as e:
 		logger.critical('4/4 - Writing failed: {}. Notifying over email.\n==============='.format(e))
 		return None
-	return
+	return True
 
 
 def main():
@@ -112,7 +113,9 @@ def main():
 		if api:
 			result = tweet(message, api, media)
 			if result:
-				markUsed(rowID, usedCount + 1)
+				result = markUsed(rowID, usedCount + 1)
+				if result:
+					logger.critical('Post Successful!\nMessage: {}\nMedia: {}'.format(message, media))
 	return
 
 
