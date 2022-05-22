@@ -1,18 +1,6 @@
 #!/usr/bin/env python
 # Requires: twitter, requests, requests-oauthlib, sqlite3
 
-"""
-TODO
------------
-2. Write a README (see the Stats project) that indicates to users how to create their own bot and maybe a design doc?
-"""
-
-"""
-TESTING ARGVS
-- notweet = doesn't tweet nor record the usage of the tweet on the database.
-- badcredentials = ensures that the credentails are incorrect.
-"""
-
 # main dependencies
 import twitter
 import sqlite3
