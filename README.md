@@ -13,6 +13,25 @@ Many people have come to learn about Ukraine due to the Russian invasion. Unfort
 3. Posts the message (optionally, with media) on Twitter. If the message is above the character limit, it breaks it into multiple posts.
 4. Marks the message as used in the local database.
 
+#### 😕 4 steps is too many! Can you show it with a needlessly long chart?
+Sure can.
+```mermaid
+flowchart TD
+    A[Connect to Twitter] --> B[Validate credentials]
+    B[Validate credentials] --> |Failed login| C[Email alert]
+    B[Validate credentials] --> |Successful login| D[Retrieve message from DB]
+    D[Retrieve message from DB] --> |Failed retrieval| C[Email alert]
+    D[Retrieve message from DB] --> |Successful retrieval| E{Below size constraints?}
+    E{Below size constraints?} --> |Yes| F[Single post on Twitter]
+    E{Below size constraints?} --> |No| G[Chained posts on Twitter]
+    F[Single post on Twitter] --> |Failed post| C[Email alert]
+    G[Chained posts on Twitter] --> |Failed post| C[Email alert]
+    F[Single post on Twitter] --> H[Mark as used]
+    G[Chained posts on Twitter] --> H[Mark as used]
+    H[Mark as used] --> |Success| I[End]
+    H[Mark as used] --> |Fail| C[Email alert]
+```
+
 #### 💪 Features
 - Supports for messages that include images.
 - Supports multi-tweet posts and Twitter separators (e.g. '...') whenever a message exceeds Twitter's character limit.
