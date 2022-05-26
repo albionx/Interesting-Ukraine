@@ -35,8 +35,11 @@ flowchart TD
 #### 💪 Features
 - Supports for messages that include images.
 - Supports multi-tweet posts and Twitter separators (e.g. '...') whenever a message exceeds Twitter's character limit.
+- Supports entering a special character (e.g. '|') to forcefully separate tweets for better legibility.
 - Sends an email alert if the Twitter login, Twitter posting or database management fails. This is so that it can run server-side without proactive monitoring.
 - Cycles randomly through messages in the database of facts, aiming to minimize the number of duplicate posts.
+- If if finds an error uploading a tweet, it will retry 2 additional times with new messages before giving up and notifying you.
+- Logs activity in debug.log with a rotating log file, in case you need to debug a failed post.
 
 #### 👍 About helping with new facts
 Thanks! The easiest way to go about it is to contact me (albionx@gmail), telling me the fact. Bonus points if you already phrase it in Twitter's punchy way, and include a beautiful image to go along with it. Thanks! 😄
@@ -57,8 +60,8 @@ access_token_secret = 'foobar'
 
 Please respect Twitter's ToS.
 
-#### 🪲 Known issues
-- ...
+#### 🪲 Known issues and next steps
+- Support uploading more than one image
 
 #### 🧪 Testing helpers
 The script accepts two invokation parameters for the sake of testing:

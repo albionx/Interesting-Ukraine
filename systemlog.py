@@ -1,8 +1,10 @@
 import credentials
 import logging
-from logging.handlers import SMTPHandler
+from logging.handlers import SMTPHandler, RotatingFileHandler
 
+# Base global variables
 emailAlert = True
+logFile = 'debug.log'
 
 # Logs host-specific configuration
 logger = logging.getLogger()
@@ -13,6 +15,12 @@ streamHandle = logging.StreamHandler()
 streamHandle.setLevel(logging.INFO)
 streamHandle.setFormatter(logging.Formatter('%(message)s'))
 logger.addHandler(streamHandle)
+
+# Adds file logging, for INFO level messages and above
+fileHandle = RotatingFileHandler(logFile, maxBytes=1000000, backupCount=5, encoding='utf-8')
+fileHandle.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S'))
+fileHandle.setLevel(logging.INFO)
+logger.addHandler(fileHandle)
 
 # Register email alerts for CRITICAL messages
 if emailAlert:

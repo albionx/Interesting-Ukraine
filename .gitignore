@@ -2,4 +2,5 @@
 /__pycache__
 credentials.py
 api-documentation.txt
-facts.db
+facts*.db
+debug*.log

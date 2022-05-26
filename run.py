@@ -13,6 +13,7 @@ factsTable = 'facts'
 twitterCharacterLimit = 280
 tweetSeparator = '...'
 forceBreak = '|'  # used to force a break in the tweet
+attempts = 0
 
 # internal dependencies
 import credentials
@@ -59,6 +60,8 @@ def connnectToTwitter():
 def tweet(message, api, media=None):
 	""" Tweets the message. The first tweet carries the image, if any. Following tweets are appended in order if the message length exceeds Twitter's character limit. """
 
+	global attempts
+
 	if 'notweet' in sys.argv:
 		logger.info('3/4 - Skipping Tweet.')
 		return True
@@ -94,7 +97,12 @@ def tweet(message, api, media=None):
 		logger.info('===============')
 
 	except Exception as e:
-		logger.critical('3/4 - Couldn\'t send the Tweet(s): {}. Notifying over email.\n==============='.format(str(e.message)))
+		attempts += 1
+		if attempts < 3:
+			logger.info('3/4 - Attempt {} failed. Error message was: {}. Trying again. \n==============='.format(str(attempts), str(e.message)))
+			main()
+		else:
+			logger.critical('3/4 - Attempt {} failed. Error message was: {}. \n==============='.format(str(attempts), str(e.message)))
 		return None
 	return True
 
