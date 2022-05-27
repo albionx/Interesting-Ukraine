@@ -33,8 +33,7 @@ flowchart TD
 ```
 
 #### 💪 Features
-- Supports for messages that include images.
-- Supports multi-tweet posts and Twitter separators (e.g. '...') whenever a message exceeds Twitter's character limit.
+- Supports for messages that include multiple images.
 - Supports entering a special character (e.g. '|') to forcefully separate tweets for better legibility.
 - Sends an email alert if the Twitter login, Twitter posting or database management fails. This is so that it can run server-side without proactive monitoring.
 - Cycles randomly through messages in the database of facts, aiming to minimize the number of duplicate posts.
@@ -61,12 +60,13 @@ access_token_secret = 'foobar'
 Please respect Twitter's ToS.
 
 #### 🪲 Known issues and next steps
-- Support uploading more than one image
+- None
 
 #### 🧪 Testing helpers
 The script accepts two invokation parameters for the sake of testing:
 1. ``` python run.py badcredentials ```: Runs the script with intentionally bad credentials. Should trigger a handled error and, if emailAlert = True, should generate an email notification.
 2. ``` python run.py notweet ```: Runs the script without actually posting the message on Twitter, and without registering its usage on the database.
 
-#### 📧 How to contact me
-albionx@gmail.com
+#### 📧 Who is behind this?
+> Santiago Andrigo: Master of bits and bytes - albionx@gmail.com
+> Vira Baranosvka-Andrigo: Ukraine connaiseur, researcher and beautiful thing

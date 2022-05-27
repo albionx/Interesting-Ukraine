@@ -5,13 +5,10 @@
 import twitter
 import sqlite3
 import sys
-import textwrap
 
 # constants
 SQLDB = 'facts.db'
 factsTable = 'facts'
-twitterCharacterLimit = 280
-tweetSeparator = '...'
 forceBreak = '|'  # used to force a break in the tweet
 attempts = 0
 
@@ -68,32 +65,20 @@ def tweet(message, api, media=None):
 
 	try:
 		messages = message.split(forceBreak)
+		images = media.split(forceBreak)
+
+		# Make sure both lists have the same amount of items and zip
+		diff = len(messages) - len(images)
+		images = images + [None for x in range(diff)]
 		firstTweet = True
 
-		for message in messages:
-			tweets = textwrap.wrap(message, width=twitterCharacterLimit)
-			if len(tweets) == 1:
-				# Carries the image and no tweet separator
-				if firstTweet:
-					response = api.PostUpdate(status=tweets[0], media=media)
-				else:  # not the first tweet
-					response = api.PostUpdate(status=tweets[0], in_reply_to_status_id=response.id)
-				logger.info('3/4 - Tweet ID {} sent successfully: {}'.format(str(response.id), tweets[0]))
-				firstTweet = False
-			elif len(tweets) > 1:
-				# Since multiple tweets are needed, we re-chunk the message to allow for the tweet separator, except in the last message.
-				tweets = textwrap.wrap(message, width=twitterCharacterLimit - len(tweetSeparator))
-				if firstTweet:
-					response = api.PostUpdate(status=tweets[0] + tweetSeparator, media=media)
-				else:  # not the first tweet
-					response = api.PostUpdate(status=tweets[0] + tweetSeparator, in_reply_to_status_id=response.id)
-				logger.info('3/4 - Tweet ID {} sent successfully: {}'.format(str(response.id), tweets[0] + tweetSeparator))
-				for tweet in tweets[1:-1]:
-					response = api.PostUpdate(status=tweet + tweetSeparator, in_reply_to_status_id=response.id)
-					logger.info('3/4 - Tweet ID {} sent successfully: {}'.format(str(response.id), tweet + tweetSeparator))
-				response = api.PostUpdate(status=tweets[-1], in_reply_to_status_id=response.id)
-				logger.info('3/4 - Tweet ID {} sent successfully: {}'.format(str(response.id), tweets[-1]))
-				firstTweet = False
+		for (message, image) in zip(messages, images):
+			if firstTweet:
+				response = api.PostUpdate(status=message, media=image)
+			else:  # not the first tweet
+				response = api.PostUpdate(status=message, media=image, in_reply_to_status_id=response.id)
+			logger.info('3/4 - Tweet ID {} sent successfully: {}'.format(str(response.id), message))
+			firstTweet = False
 		logger.info('===============')
 
 	except Exception as e:
