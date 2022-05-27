@@ -68,5 +68,5 @@ The script accepts two invokation parameters for the sake of testing:
 2. ``` python run.py notweet ```: Runs the script without actually posting the message on Twitter, and without registering its usage on the database.
 
 #### 📧 Who is behind this?
-> Santiago Andrigo: Master of bits and bytes - albionx@gmail.com
-> Vira Baranosvka-Andrigo: Ukraine connaiseur, researcher and beautiful thing
+* Santiago Andrigo: Master of bits and bytes - albionx@gmail.com
+* Vira Baranosvka-Andrigo: Ukraine connaiseur, researcher and beautiful thing
