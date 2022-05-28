@@ -64,9 +64,10 @@ Please respect Twitter's ToS.
 - None
 
 #### 🧪 Testing helpers
-The script accepts two invokation parameters for the sake of testing:
-1. ``` python run.py badcredentials ```: Runs the script with intentionally bad credentials. Should trigger a handled error and, if emailAlert = True, should generate an email notification.
-2. ``` python run.py notweet ```: Runs the script without actually posting the message on Twitter, and without registering its usage on the database.
+The script accepts three parameters for the sake of testing:
+1. ``` --badcredentials ```: Runs the script with intentionally bad credentials. Should trigger a handled error and, if emailAlert = True, should generate an email notification.
+2. ``` --notweet ```: Runs the script without actually posting the message on Twitter, and without registering its usage on the database.
+3. ``` --rowid ROWID ```: Forces a particular ROWID (integer) to be used instead of choosing messages in the regular way.
 
 #### 📧 Who is behind this?
 * Santiago Andrigo: Master of bits and bytes - albionx@gmail.com
