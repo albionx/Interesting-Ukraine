@@ -5,6 +5,7 @@
 import twitter
 import sqlite3
 import sys
+import argparse
 
 # constants
 SQLDB = 'facts.db'
@@ -21,11 +22,12 @@ def getRandomMessage():
 	""" Chooses a random message, prioritizing messages that have been posted the least in the past. """
 	try:
 		with sqlite3.connect(SQLDB) as database:
-			(rowID, addedDate, category, message, source, media, usedCount) = database.cursor().execute('SELECT * FROM {} ORDER BY usedCount, RANDOM() DESC limit 1'.format(factsTable)).fetchone()
+			if vars(args)['rowid']:
+				(rowID, addedDate, category, message, source, media, usedCount) = database.cursor().execute('SELECT * FROM {} WHERE rowID = {}'.format(factsTable, vars(args)['rowid'])).fetchone()
+			else:
+				(rowID, addedDate, category, message, source, media, usedCount) = database.cursor().execute('SELECT * FROM {} ORDER BY usedCount, RANDOM() DESC limit 1'.format(factsTable)).fetchone()
 			logger.info('===============')
-			logger.info('1/4 - Retrieval successful')
-			logger.info('1/4 - Message: {}'.format(message))
-			logger.info('1/4 - Media: {}'.format(media))
+			logger.info('1/4 - Retrieval successful: {}'.format(message[:40] + '...'))
 			logger.info('===============')
 	except:
 		logger.critical('===============\n1/4 - Retrieval failed. Unable to retrieve a message from the DB. Notifying over email.\n===============')
@@ -36,7 +38,7 @@ def getRandomMessage():
 def connnectToTwitter():
 	""" Connects to Twitter. Uses the Credentials file to isolate credentials from the main running script. """
 
-	if 'badcredentials' in sys.argv:
+	if vars(args)['badcredentials']:
 		logger.info('2/4 - Using intentionally bad credentials.')
 		credentials.consumer_key = 'fake'
 	try:
@@ -59,7 +61,7 @@ def tweet(message, api, media=None):
 
 	global attempts
 
-	if 'notweet' in sys.argv:
+	if vars(args)['notweet']:
 		logger.info('3/4 - Skipping Tweet.')
 		return True
 
@@ -87,7 +89,7 @@ def tweet(message, api, media=None):
 			logger.info('3/4 - Attempt {} failed. Error message was: {}. Trying again. \n==============='.format(str(attempts), str(e.message)))
 			main()
 		else:
-			logger.critical('3/4 - Attempt {} failed. Error message was: {}. \n==============='.format(str(attempts), str(e.message)))
+			logger.critical('3/4 - Attempt {} failed. Message: {}. Image: {}. Error message was: {}. \n==============='.format(str(attempts), message, image, str(e.message)))
 		return None
 	return True
 
@@ -95,7 +97,7 @@ def tweet(message, api, media=None):
 def markUsed(rowID, usedCount):
 	""" Marks messages as used, helping prevent message duplication when posting. """
 
-	if 'notweet' in sys.argv:
+	if vars(args)['notweet']:
 		logger.info('4/4 - Skipping writing to the DB.')
 		return True
 
@@ -112,7 +114,17 @@ def markUsed(rowID, usedCount):
 
 
 def main():
-	global api, message
+
+	global api, message, args
+
+	# Enable argument parsing
+	parser = argparse.ArgumentParser(description='Run the Twitter bot. More more details, visit: https://github.com/albionx/Interesting-Ukraine')
+	parser.add_argument('--notweet', action='store_true', help='Skip tweeting and making the message as used.')
+	parser.add_argument('--badcredentials', action='store_true', help='Uses intentionally wrong credentials to trigger an error.')
+	parser.add_argument('--rowid', type=int, default=None, help='Integer. Uses the specific RowID instead of selecting one as usual.')
+	args = parser.parse_args()
+
+	# Get started
 	(rowID, message, media, usedCount) = getRandomMessage()
 	if message:
 		api = connnectToTwitter()
